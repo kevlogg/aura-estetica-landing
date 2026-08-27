@@ -14,6 +14,7 @@ export default function BeforeAfterSlider({ beforeImg, afterImg, title }) {
   };
 
   const handleTouchMove = (e) => {
+    e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     handleMove(e.touches[0].clientX, rect);
   };
@@ -31,7 +32,7 @@ export default function BeforeAfterSlider({ beforeImg, afterImg, title }) {
           <Sparkles className="w-3.5 h-3.5" />
           <span>Resultados Reales</span>
         </span>
-        <span>Desliza para comparar</span>
+        <span className="animate-pulse">← Desliza para comparar →</span>
       </div>
 
       <div
@@ -41,39 +42,40 @@ export default function BeforeAfterSlider({ beforeImg, afterImg, title }) {
         onMouseLeave={() => setIsDragging(false)}
         onMouseMove={handleMouseMove}
         onTouchMove={handleTouchMove}
+        onTouchStart={() => setIsDragging(true)}
+        onTouchEnd={() => setIsDragging(false)}
       >
-        {/* After Image (Background full width) */}
+        {/* AFTER Image — full background layer */}
         <img
           src={afterImg}
           alt={`Después de ${title}`}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
-        <div className="absolute top-3 right-3 bg-emerald-600/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-xs shadow-sm">
-          DESPUÉS (Sesión 3)
+        <div className="absolute top-3 right-3 bg-emerald-600/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm z-10">
+          DESPUÉS ✨
         </div>
 
-        {/* Before Image (Clipped overlay) */}
+        {/* BEFORE Image — clipped with clipPath so image fills full container, only cropped */}
         <div
-          className="absolute top-0 bottom-0 left-0 overflow-hidden pointer-events-none"
-          style={{ width: `${sliderPosition}%` }}
+          className="absolute inset-0 pointer-events-none"
+          style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
         >
           <img
             src={beforeImg}
             alt={`Antes de ${title}`}
-            className="absolute top-0 left-0 h-full max-w-none object-cover"
-            style={{ width: '100%', height: '100%', minWidth: '100%' }}
+            className="absolute inset-0 w-full h-full object-cover object-center"
           />
-          <div className="absolute top-3 left-3 bg-charcoal/80 text-white text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-xs shadow-sm">
+          <div className="absolute top-3 left-3 bg-charcoal/80 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
             ANTES
           </div>
         </div>
 
         {/* Divider Handle Line */}
         <div
-          className="absolute top-0 bottom-0 w-0.5 bg-white shadow-glow pointer-events-none"
-          style={{ left: `${sliderPosition}%` }}
+          className="absolute top-0 bottom-0 w-0.5 bg-white/90 z-20 pointer-events-none"
+          style={{ left: `${sliderPosition}%`, boxShadow: '0 0 10px rgba(212,163,115,0.5)' }}
         >
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white text-terracotta shadow-lg flex items-center justify-center border-2 border-terracotta">
+          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white text-terracotta shadow-xl flex items-center justify-center border-2 border-terracotta">
             <SlidersHorizontal className="w-4 h-4" />
           </div>
         </div>

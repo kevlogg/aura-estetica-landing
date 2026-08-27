@@ -84,7 +84,7 @@ export default function HeroSection({ onBookClick, onCategorySelect }) {
 
           {/* Visual Showcase Right Column */}
           <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none">
+            <div className="relative mx-auto max-w-md lg:max-w-none overflow-visible">
               
               {/* Main Luxury Spa Photo Frame */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 aspect-[4/5] bg-nude-200">
@@ -102,9 +102,9 @@ export default function HeroSection({ onBookClick, onCategorySelect }) {
                 </div>
               </div>
 
-              {/* Floating Highlight Card 1 */}
-              <div className="absolute -top-4 -left-4 sm:-left-6 glass-card p-4 rounded-2xl shadow-luxury flex items-center gap-3 animate-float border border-terracotta/20">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-lg">
+              {/* Floating Highlight Card 1 — adjusted for mobile */}
+              <div className="absolute -top-4 left-0 sm:-left-6 glass-card p-3 sm:p-4 rounded-2xl shadow-luxury flex items-center gap-2 sm:gap-3 animate-float border border-terracotta/20">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-base sm:text-lg flex-shrink-0">
                   ✓
                 </div>
                 <div>
@@ -113,9 +113,9 @@ export default function HeroSection({ onBookClick, onCategorySelect }) {
                 </div>
               </div>
 
-              {/* Floating Highlight Card 2 */}
-              <div className="absolute -bottom-6 -right-4 sm:-right-6 glass-card p-4 rounded-2xl shadow-luxury flex items-center gap-3 border border-terracotta/20">
-                <div className="w-10 h-10 rounded-full bg-terracotta/20 flex items-center justify-center text-terracotta font-bold">
+              {/* Floating Highlight Card 2 — adjusted for mobile */}
+              <div className="absolute -bottom-4 right-0 sm:-right-6 glass-card p-3 sm:p-4 rounded-2xl shadow-luxury flex items-center gap-2 sm:gap-3 border border-terracotta/20">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-terracotta/20 flex items-center justify-center text-terracotta font-bold flex-shrink-0">
                   💳
                 </div>
                 <div>
@@ -135,23 +135,32 @@ export default function HeroSection({ onBookClick, onCategorySelect }) {
             Selecciona tu tratamiento o categoría de interés
           </p>
           
-          <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar">
-            {SERVICES_DATA.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => {
-                  onCategorySelect(cat.id);
-                  const el = document.getElementById(cat.id);
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="flex-shrink-0 flex items-center gap-2 bg-white hover:bg-terracotta hover:text-white text-charcoal border border-terracotta/20 px-4 py-2.5 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer group"
-              >
-                <span>{cat.title.split(' ')[0]}</span>
-                <span className="text-[10px] bg-nude-200 text-charcoal-muted group-hover:bg-white/20 group-hover:text-white px-2 py-0.5 rounded-full">
-                  {cat.badge.split(' ')[0]}
-                </span>
-              </button>
-            ))}
+          <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-4 no-scrollbar px-1">
+            {SERVICES_DATA.map((cat) => {
+              const CATEGORY_LABELS = {
+                faciales: { icon: '✨', label: 'Faciales' },
+                depilacion: { icon: '🔥', label: 'Depilación' },
+                corporales: { icon: '⚡', label: 'Corporales' },
+                peeling: { icon: '🌿', label: 'Peeling' },
+                cejas: { icon: '💖', label: 'Cejas & Pestañas' },
+                masajes: { icon: '💆', label: 'Masajes Spa' },
+              };
+              const catLabel = CATEGORY_LABELS[cat.id] || { icon: '✦', label: cat.title.split(' ')[0] };
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    onCategorySelect(cat.id);
+                    const el = document.getElementById(cat.id);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="flex-shrink-0 flex items-center gap-1.5 bg-white hover:bg-terracotta hover:text-white text-charcoal border border-terracotta/20 px-3.5 py-2.5 rounded-full text-xs font-semibold shadow-xs transition-all cursor-pointer"
+                >
+                  <span>{catLabel.icon}</span>
+                  <span>{catLabel.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
