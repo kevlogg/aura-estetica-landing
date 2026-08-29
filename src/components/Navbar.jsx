@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { Sparkles, Calendar, Menu, X, Phone, MessageCircle, Clock } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Sparkles, Calendar, Menu, X, MessageCircle, Clock } from 'lucide-react';
 
-export default function Navbar({ onBookClick }) {
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navLinks = [
-    { name: 'Faciales', href: '#faciales' },
-    { name: 'Depilación Láser', href: '#depilacion' },
-    { name: 'Corporales', href: '#corporales' },
-    { name: 'Peeling', href: '#peeling' },
-    { name: 'Cejas & Pestañas', href: '#cejas' },
-    { name: 'Masajes Spa', href: '#masajes' },
-    { name: 'Testimonios', href: '#testimonios' },
-    { name: 'FAQ', href: '#faq' },
+    { name: 'Faciales', path: '/faciales' },
+    { name: 'Depilación Láser', path: '/depilacion' },
+    { name: 'Corporales', path: '/corporales' },
+    { name: 'Peeling', path: '/peeling' },
+    { name: 'Cejas & Pestañas', path: '/cejas' },
+    { name: 'Masajes Spa', path: '/masajes' },
   ];
 
   return (
@@ -28,8 +28,8 @@ export default function Navbar({ onBookClick }) {
       <nav className="glass-nav px-4 sm:px-8 py-3.5 transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2.5 group">
+          {/* Logo -> Links to Home '/' */}
+          <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-terracotta to-dustyrose flex items-center justify-center text-white shadow-glow group-hover:scale-105 transition-transform">
               <Sparkles className="w-5 h-5" />
             </div>
@@ -37,18 +37,25 @@ export default function Navbar({ onBookClick }) {
               <span className="font-serif text-2xl font-bold tracking-widest text-charcoal leading-none">AURA</span>
               <span className="text-[10px] tracking-[0.25em] uppercase text-terracotta font-medium mt-0.5">Estética Advanced</span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Nav Links */}
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <Link
+              to="/"
+              className="text-xs xl:text-sm font-medium text-charcoal/80 hover:text-terracotta transition-colors py-1"
+            >
+              Inicio
+            </Link>
+
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.path}
                 className="text-xs xl:text-sm font-medium text-charcoal/80 hover:text-terracotta transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-terracotta hover:after:w-full after:transition-all"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -65,7 +72,10 @@ export default function Navbar({ onBookClick }) {
             </a>
 
             <button
-              onClick={onBookClick}
+              onClick={() => {
+                navigate('/faciales');
+                window.scrollTo(0, 0);
+              }}
               className="flex items-center gap-2 bg-gradient-to-r from-terracotta to-terracotta-dark hover:from-terracotta-dark hover:to-terracotta text-white px-5 py-2.5 rounded-full text-xs xl:text-sm font-bold shadow-luxury hover:shadow-glow hover:-translate-y-0.5 transition-all cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
@@ -86,22 +96,32 @@ export default function Navbar({ onBookClick }) {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-3 pt-3 border-t border-terracotta/15 flex flex-col gap-3 pb-2 animate-fadeIn">
+          <div className="lg:hidden mt-3 pt-3 border-t border-terracotta/15 flex flex-col gap-2 pb-2 animate-fadeIn">
+            <Link
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-medium text-charcoal hover:text-terracotta px-2 py-1.5 rounded-md hover:bg-nude-200/50 transition-colors"
+            >
+              Inicio
+            </Link>
+
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-sm font-medium text-charcoal hover:text-terracotta px-2 py-1.5 rounded-md hover:bg-nude-200/50 transition-colors"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
+
             <div className="pt-2 flex flex-col gap-2">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  onBookClick();
+                  navigate('/faciales');
+                  window.scrollTo(0, 0);
                 }}
                 className="w-full flex items-center justify-center gap-2 bg-terracotta text-white py-3 rounded-xl text-sm font-bold shadow-md cursor-pointer"
               >
