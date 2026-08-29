@@ -3,7 +3,7 @@ import { Calendar as CalendarIcon, Clock, User, CheckCircle, Sparkles, ChevronRi
 import confetti from 'canvas-confetti';
 import { SERVICES_DATA, SPECIALISTS } from '../data/servicesData';
 
-export default function BookingWidget({ preselectedCategory, preselectedTreatment }) {
+export default function BookingWidget({ preselectedCategory, preselectedTreatment, isExclusive = true }) {
   // Step State: 1 = Service, 2 = Date/Time, 3 = Specialist, 4 = Contact Form
   const [step, setStep] = useState(1);
 
@@ -40,6 +40,9 @@ export default function BookingWidget({ preselectedCategory, preselectedTreatmen
       setSelectedTreatmentName(currentCategory.treatments[0].name);
     }
   }, [selectedCatId, currentCategory]);
+
+  // Lock category if exclusive mode
+  const lockCategory = isExclusive || !!preselectedCategory;
 
   // Generate next 14 available dates
   const availableDates = Array.from({ length: 14 }).map((_, i) => {
@@ -90,6 +93,7 @@ export default function BookingWidget({ preselectedCategory, preselectedTreatmen
 
     const message = `✨ *NUEVA RESERVA ONLINE - AURA ESTÉTICA* ✨\n\n` +
       `📌 *Ref:* ${randomRef}\n` +
+      `💆‍♀️ *Categoría:* ${currentCategory.title}\n` +
       `💆‍♀️ *Tratamiento:* ${selectedTreatmentName}\n` +
       `📅 *Fecha:* ${selectedDate || availableDates[0].fullDateStr}\n` +
       `⏰ *Horario:* ${selectedTime || '16:00 hs'}\n` +
@@ -118,13 +122,13 @@ export default function BookingWidget({ preselectedCategory, preselectedTreatmen
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-terracotta/10 text-terracotta-dark text-xs font-bold px-3.5 py-1.5 rounded-full mb-3">
             <Sparkles className="w-4 h-4" />
-            <span>Autoagendamiento Centralizado 24/7</span>
+            <span>Reserva Exclusiva de Turno 24/7</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charcoal">
-            Reserva tu Turno en 4 Simples Pasos
+            Reserva tu Turno para {currentCategory.title}
           </h2>
           <p className="text-sm sm:text-base text-charcoal-muted max-w-xl mx-auto mt-2">
-            Elige tu sesión, fecha y horario. Confirmación instantánea y congelamiento de precio promocional sin esperas.
+            Elige la opción específica de tu sesión, fecha y horario. Confirmación instantánea sin esperas.
           </p>
         </div>
 
@@ -172,30 +176,47 @@ export default function BookingWidget({ preselectedCategory, preselectedTreatmen
           {step === 1 && (
             <div className="space-y-6 animate-fadeIn">
               <h3 className="font-serif text-xl font-bold text-charcoal flex items-center gap-2">
-                <span>1. Selecciona la Categoría y Tratamiento:</span>
+                <span>1. Selecciona la Opción de Tratamiento:</span>
               </h3>
 
-              {/* Category Pills */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                {SERVICES_DATA.map((cat) => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedCatId(cat.id);
-                      setSelectedTreatmentName(cat.treatments[0].name);
-                    }}
-                    className={`p-3 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
-                      selectedCatId === cat.id
-                        ? 'bg-terracotta text-white border-terracotta shadow-md'
-                        : 'bg-white text-charcoal border-terracotta/20 hover:border-terracotta'
-                    }`}
-                  >
-                    <div className="font-bold">{cat.title.split(' ')[0]}</div>
-                    <div className="text-[10px] opacity-80 mt-0.5">{cat.price}</div>
-                  </button>
-                ))}
-              </div>
+              {/* Locked Exclusive Category Banner or Category Selector */}
+              {lockCategory ? (
+                <div className="bg-nude-200/90 border border-terracotta/30 p-4 rounded-2xl flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-8 h-8 rounded-full bg-terracotta text-white flex items-center justify-center font-bold text-sm">
+                      ✨
+                    </span>
+                    <div>
+                      <span className="text-[10px] font-bold text-terracotta-dark uppercase tracking-wider">Servicio Exclusivo Seleccionado</span>
+                      <h4 className="font-serif font-bold text-base text-charcoal">{currentCategory.title}</h4>
+                    </div>
+                  </div>
+                  <span className="text-xs bg-white text-terracotta-dark font-bold px-3 py-1 rounded-full border border-terracotta/20">
+                    {currentCategory.badge}
+                  </span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {SERVICES_DATA.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCatId(cat.id);
+                        setSelectedTreatmentName(cat.treatments[0].name);
+                      }}
+                      className={`p-3 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer ${
+                        selectedCatId === cat.id
+                          ? 'bg-terracotta text-white border-terracotta shadow-md'
+                          : 'bg-white text-charcoal border-terracotta/20 hover:border-terracotta'
+                      }`}
+                    >
+                      <div className="font-bold">{cat.title.split(' ')[0]}</div>
+                      <div className="text-[10px] opacity-80 mt-0.5">{cat.price}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Specific Treatments List */}
               <div className="mt-4">
